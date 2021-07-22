@@ -1,0 +1,46 @@
+import pandas as pd
+import pyodbc
+from datetime import date
+
+input=pd.read_csv(r'D:\systech training\python\input.csv')
+
+input.head()
+
+import pyodbc 
+# Some other example server values are
+# server = 'localhost\sqlexpress' # for a named instance
+# server = 'myserver,port' # to specify an alternate port
+server = 'OTUSDPSQL' 
+database = 'Target_LB2_Tchintha' 
+username = 'LB2_Tchintha' 
+password = 'Tharuntej@12' 
+cnxn = pyodbc.connect('DRIVER={SQL Server Native Client 11.0};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+cursor = cnxn.cursor()
+
+for i in range(len(input)):
+    if(input.TEST_TYPE[i]=='Row_Count_Check' and (input.ACTIVE_FLG[i]=='y'or input.ACTIVE_FLG[i]=='Y')):
+        o_file=input.OP_RESULT_FILE[i]
+        source=pd.read_sql(input.SRC_SQL[i],cnxn)
+        target=pd.read_sql(input.TGT_SQL[i],cnxn)
+        print(source.values[0])
+        print(target.values[0])
+        result=(source==target)
+        Dictionary = {'source_count': source.values[0], 'target_count': target.values[0], 'Result': result.values[0]}
+        df=pd.DataFrame.from_dict(Dictionary)
+        df.to_excel(o_file.format(date.today()),index=False)
+        #df.to_csv(r'D:\systech training\python\output.csv',index=False)
+ 
+
+        #print(df)
+        #df.to_csv(o_file{}.format(one),index=False)
+    if(input.TEST_TYPE[i]=='Duplicate Check' and (input.ACTIVE_FLG[i]=='y' or input.ACTIVE_FLG[i]=='Y')):
+        o_file=input.OP_RESULT_FILE[i]
+        df1=pd.read_sql(input.TGT_SQL[i],cnxn)
+        print(df1)
+        df1.to_excel(o_file.format(date.today()),index=False)
+        
+    if(input.TEST_TYPE[i]=='Random_Record_Check') and (input.ACTIVE_FLG[i]=='y'.casefold()):
+        source=pd.read_sql(input.SRC_SQL[i],cnxn)
+        target=pd.read_sql(input.TGT_SQL[i],cnxn)
+        result=(source==target)
+        

@@ -1,0 +1,109 @@
+import requests
+import json
+import io
+import pandas as pd
+from datetime import date
+import calendar
+
+base = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format='
+qformat = 'geojson'
+
+for i in range(12):    
+    startdate = date(2017, i+1, 1) 
+    enddate = date(2017, i+1, calendar.monthrange(startdate.year, startdate.month)[1])
+    url = base + qformat + '&starttime=' + str(startdate) + '&endtime=' + str(enddate)
+    response = requests.get(url)
+    response.json()
+    data = json.loads(response.text) 
+
+
+data['features']
+
+df = pd.json_normalize(data['features'])
+
+df.columns
+
+
+df.rename(columns ={'properties.mag':'mag', 'properties.place':'place', 'properties.time':'time',
+       'properties.updated':'updated', 'properties.tz':'tz', 'properties.url':'url',
+       'properties.detail':'detail', 'properties.felt':'felt','properties.cdi':'cdi',
+       'properties.mmi':'mmi', 'properties.alert':'alert', 'properties.status':'status',
+       'properties.tsunami':'tsunami', 'properties.sig':'sig', 'properties.net':'net',
+       'properties.code':'code', 'properties.ids':'ids', 'properties.sources':'sources',
+       'properties.types':'types',  'properties.nst':'nst', 'properties.dmin':'dmin',
+       'properties.rms':'rms', 'properties.gap':'gap', 'properties.magType':'magType',
+       'properties.type':'ptype', 'properties.title':'title', 'geometry.type':'gtype',
+       'geometry.coordinates':'coordinates'},inplace = True)
+
+df = df.drop(columns='type')
+
+max(df['mag'])
+
+df['time'].value_counts()[:10].sort_values(ascending=False)
+
+import pyodbc 
+# Some other example server values are
+# server = 'localhost\sqlexpress' # for a named instance
+# server = 'myserver,port' # to specify an alternate port
+server = 'OTUSDPSQL' 
+database = 'Target_LB2_Tchintha' 
+username = 'LB2_Tchintha' 
+password = 'Tharuntej@12' 
+cnxn = pyodbc.connect('DRIVER={SQL Server Native Client 11.0};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+cursor = cnxn.cursor()
+
+df.columns
+
+cursor.execute('CREATE TABLE dbo.earthquake \
+               ( "id" Varchar(100) \
+               , "mag" Varchar(100) \
+               , "place" Varchar(100) \
+               , "time" Varchar(100) \
+               , "updated" Varchar(100) \
+               , "tz" Varchar(100) \
+               , "url" Varchar(100) \
+               , "detail" Varchar(100) \
+               , "felt" Varchar(100) \
+               , "cdi"  Varchar(100) \
+               , "mmi" Varchar(100) \
+               , "alert" Varchar(100) \
+               , "status" Varchar(100) \
+               , "tsunami" Varchar(100) \
+               , "sig" Varchar(100) \
+               , "net" Varchar(100) \
+               , "code" Varchar(100) \
+               , "ids" Varchar(100) \
+               , "sources" Varchar(100) \
+               , "types" Varchar(100) \
+               , "nst" Varchar(100) \
+               , "dmin" Varchar(100) \
+               , "rms" Varchar(100) \
+               , "gap" Varchar(100) \
+               , "magType" Varchar(100) \
+               , "ptype" Varchar(100) \
+               , "title" Varchar(100) \
+               , "gtype" Varchar(100) \
+               , "coordinates" Varchar(100) \
+              )')
+
+cnxn.commit()
+cursor.close()
+
+print(pd.read_sql('select * from dbo.earthquake',cnxn))
+
+df = df.astype(str)
+
+
+import sqlalchemy
+import urllib
+ 
+
+quoted = urllib.parse.quote_plus('Driver={SQL Server Native Client 11.0};'
+                'Server=OTUSDPSQL;'
+                'Database=Target_SS_Bradhakr;'
+                'UID=SS_Bradhakr;'
+                'PWD='
+                )
+engine=sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect={}'.format(quoted))
+
+df.to_sql('earthquakes',con=engine,if_exists='replace',index=False)

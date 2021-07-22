@@ -1,0 +1,14 @@
+branch1=pd.read_excel(r'D:\systech training\python\sales_branch1.xlsx')
+branch1.head()
+
+branch2=pd.read_excel(r'D:\systech training\python\branch2_sales.xlsx')
+branch2.head()
+
+branch1_branch2=pd.merge(branch1,branch2,how='outer',on='PRODUCT_TYPE')
+branch1_branch2.head()
+
+sales1 = branch1_branch2.melt(id_vars=['PRODUCT_TYPE'],var_name='date', value_name='QTY_Sold')
+sales1.head()
+print(sales1)
+
+sales1.to_csv(r'D:\systech training\python\final_result.csv')

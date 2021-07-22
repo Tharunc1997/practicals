@@ -1,0 +1,60 @@
+from selenium import webdriver
+import pandas as pd
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
+from selenium.webdriver.support.select import Select
+
+driver = webdriver.Chrome(executable_path=r"C:\chrome\chromedriver.exe")
+driver.get("https://datatables.net/")
+
+driver.maximize_window()
+
+action=ActionChains(driver)
+Click=driver.find_element_by_xpath('//*[@id="example_length"]/label/select')
+action.context_click(Click).send_keys(Keys.ARROW_DOWN).send_keys(Keys.ARROW_DOWN).send_keys(Keys.ARROW_DOWN).send_keys(Keys.ENTER).perform()
+Click1=driver.find_element_by_xpath('//*[@id="example"]/tbody/tr/td[1]')
+action.context_click(Click1).perform()
+
+
+
+e_data=driver.find_elements_by_xpath('//*[@id="example"]/tbody/tr/td')
+for edata in e_data:
+  display_prop = edata.value_of_css_property('display')
+  if display_prop == 'none':
+      driver.execute_script("arguments[0].style.display = 'block';", edata)
+
+name=driver.find_elements_by_xpath('//tbody/tr/td[1]')
+position=driver.find_elements_by_xpath('//tbody/tr/td[2]') 
+office=driver.find_elements_by_xpath('//tbody/tr/td[3]')
+age=driver.find_elements_by_xpath('//tbody/tr/td[4]')
+start=driver.find_elements_by_xpath('//tbody/tr/td[5]')
+salary=driver.find_elements_by_xpath('//tbody/tr/td[6]')
+
+
+out_result=[]
+
+
+for i in range(len(office)):
+
+ 
+
+           temporary_Data=temporary_data={'name': name[i].text, 
+                                          'position': position[i].text,
+                                          'office': office[i].text,
+                                          'age': age[i].text,
+                                          'date':start[i].text,
+                                          'salary':salary[i].text
+                                         }
+           out_result.append(temporary_Data)
+
+ 
+
+ 
+
+           data=pd.DataFrame(out_result)
+
+ 
+
+print(data)
+
+data.to_csv(r'D:\systech training\python\answers\1.csv',index='False')

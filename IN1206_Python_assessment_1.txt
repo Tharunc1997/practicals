@@ -1,0 +1,28 @@
+                            python assessment-1
+
+1)
+sample_string = 'xxayyyybbqqqqq'
+index1=0
+index2=0
+out_list = []
+
+while(index1 < len(sample_string)):
+    in_list = [sample_string[index1]]
+    index2= index1
+    while(index2 < len(sample_string)-1):
+        if(sample_string[index2] == sample_string[index2+1] and (index2 < len(sample_string)) ):
+            in_list.append(sample_string[index2])
+            index2 = index2+1
+        else:
+            index1 = index2
+            break;
+    out_list.append(in_list)
+    index1 = index1+1
+    
+temp = 0
+max_seq_list = []
+for x in out_list:
+    if(len(x) > len(max_seq_list)):
+        max_seq_list = x
+print('max repeated seq char is..'+max_seq_list[0])
+print('The seq length is..',len(max_seq_list))

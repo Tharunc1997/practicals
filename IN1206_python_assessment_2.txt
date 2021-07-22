@@ -1,0 +1,94 @@
+          Assessment-2 python
+1)
+fullsentence = input('Enter the sentence:')
+O_sentence = ''
+print(fullsentence)
+words = fullsentence.split(' ')
+print(words)
+for word in words:
+    if(word != ''):
+        temp = (word[0:len(word)-2] + (word[len(word)-2]).upper() + word[len(word)-1])
+        O_sentence = O_sentence+temp+' '
+print(o_sentence)
+
+2)
+n=int(input("enter elements to be inserted:"))
+a=[]
+for i in range(0,n):
+    ele=int(input("enter element:"))
+    a.append(ele)
+avg=sum(a)//n
+print("Avg:",avg)
+a.sort()
+b=a[-1]-a[0]
+print("Difference:",b)
+
+3)
+num=int(input("enter no.of rows:"))
+
+for i in range(0,num):
+
+    for j in range(0,num-i-1):
+
+       print(end="  ")
+
+    for j in range(0,2*i+1 ):
+
+       print("*", end=" ")
+
+    print()
+
+4)
+name = input('Enter the name:')
+print(name)
+words = name.split()
+numerology = 0
+print(words)
+output = 0
+for x in range(0,len(words)):
+    sub_word = words[x]
+    sum=0
+    for y in range(0,len(sub_word)):
+        if(sub_word[y].casefold() == 'a' or sub_word[y].casefold() == 'j' or sub_word[y].casefold() == 's'):
+            sum=sum+1
+        elif(sub_word[y].casefold() == 'b' or sub_word[y].casefold() == 'k' or sub_word[y].casefold() == 't'):
+            sum=sum+2
+        elif(sub_word[y].casefold() == 'c' or sub_word[y].casefold() == 'l' or sub_word[y].casefold() == 'u'):
+            sum=sum+3
+        elif(sub_word[y].casefold() == 'd' or sub_word[y].casefold() == 'm' or sub_word[y].casefold() == 'v'):
+            sum=sum+4
+        elif(sub_word[y].casefold() == 'e' or sub_word[y].casefold() == 'n' or sub_word[y].casefold() == 'w'):
+            sum=sum+5
+        elif(sub_word[y].casefold() == 'f' or sub_word[y].casefold() == 'o' or sub_word[y].casefold() == 'x'):
+            sum=sum+6
+        elif(sub_word[y].casefold() == 'g' or sub_word[y].casefold() == 'p' or sub_word[y].casefold() == 'y'):
+            sum-sum+7
+        elif(sub_word[y].casefold() == 'h' or sub_word[y].casefold() == 'q' or sub_word[y].casefold() == 'z'):
+            sum=sum+8
+        elif(sub_word[y].casefold() == 'i' or sub_word[y].casefold() == 'r'):
+            sum=sum+9
+    print(sub_word,': ', sum)
+    numerology = numerology+sum
+            
+print(name,': ',numerology)
+
+for digit in str(numerology):
+    output = output+int(digit)
+print('output: ',output)
+
+5)
+in_string="&he&amp hii&io&amp"
+out_string=''
+for index in range(0,len(in_string)):
+    if(in_string[index]=='&' and in_string[index : index+4] != '&amp'):
+        out_string=out_string+'&amp'
+    else:
+        out_string = out_string+in_string[index]
+print(in_string)
+print(out_string)
+
+s=input("enter sentence:")
+l=s.split()
+newlist=[i[::-1] for i in l]
+print(" ".join(newlist))
+
